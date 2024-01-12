@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line} from 'react-chartjs-2';
+import ReactApexChart from "react-apexcharts";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getData } from '../../redux/action';
-import Yoytable from './Yoytable';
+
 import { Box, Flex, Image, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import Piachat_table from './Piachart_table';
-import Piachart from './Piachart';
+
 import Piachart_table from './Piachart_table';
 import Filter from './Filter';
 
@@ -26,101 +26,90 @@ function Chart1() {
 
   const RE_23 = Data_23?.map((el) => el.RE);
   const Emission_23 = Data_23?.map((el) => el.Emissions);
+  const [gheight, setGheight] = useState(500);
 
   useEffect(() => {
     dispatch(getData());
   }, []);
 
-  const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    datasets: [
+  const [optns, setOptns] = useState({
+    chart: {
+      height: gheight,
+      type: "line",
+    },
+    stroke: {
+      width: [0, 2]
+    },
+    dataLabels: {
+      enabled: true,
+      enabledOnSeries: [1],
+    },
+
+
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+
+    yaxis: [
       {
-        label: "RE-2022",
-        data: RE_22,
-        fill: true,
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,1)",
-        yAxisID: 'y1',
+        title: {
+          text: "Emissions",
+        },
       },
       {
-        label: "RE-2023",
-        data: RE_23,
-        fill: false,
-        borderColor: "#742774",
-        yAxisID: 'y1',
+        opposite: true,
+        title: {
+          text: "R/E",
+        },
       },
-    //   {
-    //     label: "Emission_22",
-    //     data: Emission_22,
-    //     fill: true,
-    //     backgroundColor: "rgba(75,192,192,0.2)",
-    //     borderColor: "rgba(75,192,192,1)",
-    //     yAxisID: 'y',
-    //   },
-    //   {
-    //     label: "Emission_23",
-    //     data: Emission_23,
-    //     fill: false,
-    //     borderColor: "#742774",
-    //     yAxisID: 'y',
-    //   },
-    //   {
-    //     label: "bar Emission_22",
-    //     data: Emission_22,
-    //     backgroundColor: "rgba(255, 99, 132, 0.2)",
-    //     borderColor: "rgba(255, 99, 132, 1)",
-    //     yAxisID: 'y',
-    //     type: 'bar',  // Use 'bar' instead of 'Bar'
-    //   },
-    //   {
-    //     label: "bar Emission_23",
-    //     data: Emission_23,
-    //     backgroundColor: "rgba(54, 162, 235, 0.2)",
-    //     borderColor: "rgba(54, 162, 235, 1)",
-    //     yAxisID: 'y',
-    //     type: 'bar',  // Use 'bar' instead of 'Bar'
-    //   },
     ],
-  };
 
-  const options = {
-    responsive: true,
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
-    stacked: false,
-    plugins: {
-      title: {
-        display: true,
-        text: 'Chart.js Line and  Chart - Multi Axis',
-      },
-    },
-    scales: {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-        title: {
-          display: true,
-          text: 'Emission/Revenue',
-        },
-      },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        grid: {
-          drawOnChartArea: false,
-        },
-        title: {
-          display: true,
-          text: 'R/E',
-        },
-      },
-    },
-  };
+  });
 
+  const [series, setSeries] = useState([
+    {
+      name: "Emissions",
+      type: "column",
+      data: Emission_22
+    },
+    {
+      name: 'Emissions',
+      type: 'column',
+      data: Emission_23
+    },
+    {
+      name: "R/E",
+      type: "line",
+      data: RE_22
+    },
+    {
+      name: 'E/R-2022',
+      type: 'line',
+      data: RE_23
+    }
+  ]);
+  useEffect(() => {
+    setSeries([
+      {
+        name: "Emissions-2022",
+        type: "column",
+        data: Emission_22
+      },
+      {
+        name: 'Emissions-2023',
+        type: 'column',
+        data: Emission_23
+      },
+      {
+        name: "R/E-2022",
+        type: "line",
+        data: RE_22
+      },
+      {
+        name: 'R/E-2023',
+        type: 'line',
+        data: RE_23
+      }
+    ])
+  }, [Emission_22,Emission_23,RE_22,RE_23])
   return (
     <div className="App" id="Chart">
    <Box className='Header_Main'>
@@ -137,7 +126,7 @@ function Chart1() {
           <p className='Category_Text'>Category-1</p>
        </Flex>
        <Flex className='Header-Right'>
-       <Image className='Profile-Icon' src=''></Image>
+       <Image className='Profile-Icon' src='https://s3-alpha-sig.figma.com/img/b270/0d23/767117420f0f997824b701ee2fce525b?Expires=1705276800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=VudgOdkW0zl8pPArArVOc65YBNtxwpA4q3XxPaygHYLxJ2vjk11VE4LAgyOGFV~qRoBrgfmQbdSXAy-9dK8p0XMbSqWoKGZGkL3cWKePbms~GawOl5pMEuHpTHTpK8B41qZQ5vMsTnJsrMzmV8jBuWokBrTK4-7S3N0JHsByWUMQnm5x9cFV7ivufrgz-FgvlV5xLpiR1wZgFSvdP4bz2ej3np~R7FVS1DRpnnKAvkdlysnEZZUO3E7SkCLqzdfu7s4haG0IBQUyKJgi14pwj~B1Hp1z-RxFC28veWJX0mblNSMbhJ5PLUzaVRo02kOJc3QZNTNnOIPtGOZAE8vbMw__'></Image>
        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
   <path fill-rule="evenodd" clip-rule="evenodd" d="M5 8L12 16L19 8H5Z" fill="#474444"/>
 </svg>
@@ -162,7 +151,12 @@ function Chart1() {
    <Filter/>
    <div className='Chart'>
   
-    <Line options={options} data={data} />
+   <ReactApexChart
+          options={optns}
+          series={series}
+          type='line'
+          height={gheight}
+        />
     </div>
   
     
