@@ -6,7 +6,7 @@ function Dashboard() {
   return (
     <div className='DashBoard'>
       <div>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd1ItbLR9_1kVT-hdH_4HAcEb_E8eHVBAJWQ&usqp=CAU" alt="" />
+      <img src="./images/logo.png" alt="" />
       </div>
       <div className='DropdownSec'>
         <p>DATA-IN</p>
